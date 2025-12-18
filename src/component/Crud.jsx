@@ -79,7 +79,41 @@ const handleDelete=(index)=>{
 
           </Form.Group>        
           </Col>
-          
+          <Col>
+            <Form.Group>
+              <Form.Label>Country</Form.Label>
+              <Form.Control value={country} disabled/>
+            </Form.Group>
+          </Col>
+        </Row>
+        <Row ClasssNmae='mb-3'>
+        <Col>
+        <Form.Group>
+          <Form.Label>State</Form.Label>
+          <From.Select value={state}
+          onChange={(e)=>
+            setstate(e.target.value)
+          } required>
+          <option value=''>Select state</option>
+          {stateList.map((item,index)=>(
+            <option key={index} value={item}>{item}</option>
+            
+          ))}
+          </From.Select>
+        </Form.Group>
+        </Col>
+        <Col>
+          <Form.Group>
+            <Form.Label>City</Form.Label>
+            <From.Select value={city} onChange={(e)=>
+            setCity(e.target.value)
+            }>
+            
+              
+            </From.Select>
+          </Form.Group>
+        </Col>
+
         </Row>
       </Form>
      </Container>

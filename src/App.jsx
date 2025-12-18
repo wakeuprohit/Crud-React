@@ -13,6 +13,7 @@ export default function App() {
   const [country] = useState("India");
 
   const [records, setRecords] = useState([]);
+  const [active, setactive] = useState(true);
   const [editIndex, setEditIndex] = useState(null);
 
   useEffect(() => {
@@ -26,7 +27,9 @@ export default function App() {
             const postOffice = data.PostOffice;
 
             const states = [...new Set(postOffice.map((item) => item.State))];
-            const cities = [...new Set(postOffice.map((item) => item.District))];
+            const cities = [
+              ...new Set(postOffice.map((item) => item.District)),
+            ];
 
             setStateList(states);
             setCityList(cities);
@@ -41,7 +44,7 @@ export default function App() {
   const handleSubmit = (e) => {
     e.preventDefault();
 
-    const newRecord = { pincode, state, city, country };
+    const newRecord = { pincode, state, city, country, active };
 
     if (editIndex !== null) {
       const updated = [...records];
@@ -51,13 +54,15 @@ export default function App() {
     } else {
       setRecords([...records, newRecord]);
     }
-
-    // Reset form
+    handleReset();
+  };
+  const handleReset = () => {
     setPincode("");
     setState("");
     setCity("");
     setStateList([]);
     setCityList([]);
+    setactive(true);
   };
   const handleEdit = (index) => {
     const item = records[index];
@@ -65,18 +70,26 @@ export default function App() {
     setPincode(item.pincode);
     setState(item.state);
     setCity(item.city);
+    setactive(item.active);
     setEditIndex(index);
-  }
+  };
   const handleDelete = (index) => {
     setRecords(records.filter((_, i) => i !== index));
+  };
+  const toggleActive = (index) => {
+    const update = [...savereacord];
+    update[index].active = !update[index].active;
+    setsavereacord(update);
   };
 
   return (
     <Container className="mt-4">
       <h3 className="text-center mb-4">CURD</h3>
 
-      <Form onSubmit={handleSubmit} className="p-4 border rounded shadow-sm bg-light">
-
+      <Form
+        onSubmit={handleSubmit}
+        className="p-4 border rounded shadow-sm bg-light"
+      >
         <Row className="mb-3">
           <Col>
             <Form.Group>
@@ -103,10 +116,16 @@ export default function App() {
           <Col>
             <Form.Group>
               <Form.Label>State</Form.Label>
-              <Form.Select value={state} onChange={(e) => setState(e.target.value)} required>
+              <Form.Select
+                value={state}
+                onChange={(e) => setState(e.target.value)}
+                required
+              >
                 <option value="">Select State</option>
                 {stateList.map((s, i) => (
-                  <option key={i} value={s}>{s}</option>
+                  <option key={i} value={s}>
+                    {s}
+                  </option>
                 ))}
               </Form.Select>
             </Form.Group>
@@ -115,19 +134,43 @@ export default function App() {
           <Col>
             <Form.Group>
               <Form.Label>City</Form.Label>
-              <Form.Select value={city} onChange={(e) => setCity(e.target.value)} required>
+              <Form.Select
+                value={city}
+                onChange={(e) => setCity(e.target.value)}
+                required
+              >
                 <option value="">Select City</option>
                 {cityList.map((c, i) => (
-                  <option key={i} value={c}>{c}</option>
+                  <option key={i} value={c}>
+                    {c}
+                  </option>
                 ))}
               </Form.Select>
             </Form.Group>
           </Col>
         </Row>
-
-        <Button type="submit" className="w-100" variant="primary">
-          {editIndex !== null ? "Update Record" : "Add Record"}
-        </Button>
+        <Row>
+          <Col>
+            <Button type="submit" className="w-100" variant="primary">
+              {editIndex !== null ? "Update Record" : "Add Record"}
+            </Button>
+          </Col>
+          <Col>
+            <Button variant="secondary" className="w-100" onClick={handleReset}>
+              reset
+            </Button>
+          </Col>
+        </Row>
+        <Row className="mc-3">
+          <Col>
+            <Form.Check
+              type="switch"
+              label={active ? "status:active" : "status:inactive"}
+              checked={active}
+              onChange={() => setactive(!active)}
+            />
+          </Col>
+        </Row>
       </Form>
       <Table bordered striped hover className="mt-4 shadow-sm">
         <thead className="table-dark">
@@ -136,6 +179,7 @@ export default function App() {
             <th>State</th>
             <th>City</th>
             <th>Country</th>
+            <th>Status</th>
             <th width="150px">Action</th>
           </tr>
         </thead>
@@ -146,6 +190,7 @@ export default function App() {
               <td>{rec.state}</td>
               <td>{rec.city}</td>
               <td>{rec.country}</td>
+              <td>{rec.active ? "Active" : "inactive"}</td>
               <td>
                 <Button
                   variant="warning"
@@ -173,9 +218,6 @@ export default function App() {
 // import React from 'react'
 
 // import Crud from './component/Crud';
-
-
-
 
 // export default function App() {
 //   return (
