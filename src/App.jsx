@@ -161,7 +161,7 @@ export default function App() {
             </Button>
           </Col>
         </Row>
-        <Row className="mc-3">
+        <Row className="mb-3">
           <Col>
             <Form.Check
               type="switch"
